@@ -1,34 +1,30 @@
 <template>
   <splide :options="options">
     <splide-slide v-for="(op, idx) in c" :key="idx">
-      <RecommendCard />
+      <GroupRecommendCard />
     </splide-slide>
   </splide>
 </template>
 
 <script>
-import "@/assets/css/splide.css";
-import RecommendCard from "./RecommendCard.vue";
+import "@/assets/css/group_splide.css";
+import GroupRecommendCard from "./GroupRecommendCard.vue";
 
 export default {
-  components: { RecommendCard },
+  components: { GroupRecommendCard },
   data() {
     return {
       c: [{}, {}, {}, {}, {}, {}, {}],
       options: {
         rewind: true,
-        // width: 1000,
-        // perPage: 2,
-        // gap: "5px",
         type: "loop",
+        perPage: 2,
         padding: {
-          right: "12.5rem",
-          left: "12.5rem",
+          right: "50px",
+          left: "50px",
         },
         pagination: true,
-        autoplay: true,
-        interval: 5000,
-        pauseOnHover: true,
+
         classes: { pagination: "splide__pagination" },
       },
     };
@@ -36,9 +32,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.splide {
-  padding: 0 45px;
-  margin: 15px 0;
-}
-</style>
+<style scoped lang="css" src="@/assets/css/group_splide.css"></style>

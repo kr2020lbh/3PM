@@ -1,17 +1,19 @@
 <template>
   <splide :options="options">
     <splide-slide v-for="(op, idx) in c" :key="idx">
-      <RecommendCard />
+      추천 카드
+      <!-- <RecommendCard /> -->
     </splide-slide>
   </splide>
 </template>
 
 <script>
 import "@/assets/css/splide.css";
-import RecommendCard from "./RecommendCard.vue";
+// import RecommendCard from "./RecommendCard.vue";
 
 export default {
-  components: { RecommendCard },
+  name: "GroupFeedRecommend",
+  // components: { RecommendCard },
   data() {
     return {
       c: [{}, {}, {}, {}, {}, {}, {}],

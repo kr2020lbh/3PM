@@ -1,49 +1,59 @@
 <template>
-  <article class="feed-box">
+  <article class="feed-box">    
     <div class="feed-userprofile-box">
-      <img
-        src="https://blog.cpanel.com/wp-content/uploads/2019/08/user-01.png"
-        alt="유저프로필이미지"
-        class="feed-userprofile-img"
-        @click="goToProfile"
-      >
+      <div class="feed-userprofile-space">
+        <img
+          v-if="fd.user.img"
+          :src="`https://dtbqjjy7vxgz8.cloudfront.net/${fd.user.img}`"
+          onerror="this.src='http://image.yes24.com/momo/TopCate2600/MidCate6/259955881.jpg'"
+          alt="유저프로필이미지"
+          class="feed-userprofile-image"
+          @click="goToProfile"
+        >
+        <img
+          v-else
+          src="http://image.yes24.com/momo/TopCate2600/MidCate6/259955881.jpg"
+          alt="유저프로필이미지"
+          class="feed-userprofile-image"
+          @click="goToProfile"
+        >
+      </div>
+      
       <div class="feed-userprofile-content">
         <div>
-          <h3 v-if="fd.user.nickname" class="feed-userprofile-name" @click="goToProfile">{{fd.user.nickname}}</h3>
+          <p v-if="fd.user.nickname" class="feed-userprofile-name" @click="goToProfile">{{fd.user.nickname}}</p>
           <h3 v-else class="feed-userprofile-name" @click="goToProfile">anonymous</h3>
+          <div class="feed-date">
+          <p>{{ month }}.{{ day}} {{ time }} </p>
+          </div>
         </div>
-        
-        <div>
-          <p>{{ year }} 년 {{ month }} 월 {{ day}} 일 {{ time }} </p>
-        </div>
-        
+        <div class="feed-tag-box">
+          <div v-for="(tag, idx) in fd.tags" :key="idx" @click="goToSearchTag(tag)"> <button> {{ tag }} </button></div>
+        </div>    
       </div>
     </div>
-
-    <div class="feed-content-box" @click="goToDetail">
-      <span v-for="(tag, idx) in fd.tag" :key="idx" @click="goToSearchTag(tag)"> <button> {{ tag }} </button></span>
-
-      <div v-if="fd.file">
-        <img :src="fd.file" alt="업로드 파일">
+    <div class="feed-content-box">
+      <div v-if="fd.file" @click="goToDetail">
+        <img :src="`https://dtbqjjy7vxgz8.cloudfront.net/${fd.file}`" alt="업로드 파일">
       </div>
-
-      <div v-else>
+      <div v-else  @click="goToDetail">
         <p v-html="fd.content">
           <!-- {{ fd.content }} -->
         </p>
       </div>
-
     </div>
-    <div class="feed-like-comment-box" @click="goToDetail">
-      <span>
-        <i class="far fa-thumbs-up"></i>
-        좋아요가 <span v-if="fd.likeCnt">{{ fd.likeCnt }}</span> <span v-else> 0</span> 개가 있습니다.
-      </span>
-      <span>
-        <i class="far fa-comment"></i>
-        댓글이 <span v-if="fd.commentCnt">{{ fd.commentCnt }}</span> <span v-else> 0</span> 개가 있습니다.
-      </span>
-    </div>
+      <div class="feed-footer">
+        <div class="feed-footer-box" @click="goToDetail">
+            <div>
+              <i class="far fa-thumbs-up"></i>
+              <span v-if="fd.likeCnt">{{ fd.likeCnt }}</span> <span v-else> 0</span>
+            </div>
+            <div>
+              <i class="far fa-comment"></i>
+              <span v-if="fd.commentCnt">{{ fd.commentCnt }}</span> <span v-else> 0</span>
+            </div>
+        </div>
+      </div>
   </article>
 </template>
 
@@ -52,7 +62,7 @@ export default {
   name: 'Feed',
   props: {
     fd: Object,
-    Category: String,
+    Category: Number,
   },
   data() {
     return {
@@ -65,11 +75,13 @@ export default {
   methods: {
     setDateTime () {
       if (this.fd) {
-        let date = this.fd.localDateTime.split('T')[0]
-        this.time = this.fd.localDateTime.split('T')[1]
+        let date = this.fd.date.split('T')[0]
+        this.time = this.fd.date.split('T')[1]
         this.year = date.split('-')[0]
         this.month = date.split('-')[1]
-        this.day = date.split('-')[2]
+        this.day = date.split('-')[2] 
+        // this.fd.file = "http://image.yes24.com/momo/TopCate2600/MidCate6/259955881.jpg"
+        // this.fd.file = "http://image.yes24.com/momo/TopCate2600/MidCate6/259955881.jpg"
       }
     },
     goToProfile () {
@@ -79,7 +91,7 @@ export default {
       this.$router.push({ name: 'Search', query: { query: tag, filter: 'tag' }})
     },
     goToDetail () {
-      this.$router.push({ name: 'NewsfeedDetail', query: { id: this.fd.indoorId, Category: this.Category }, params: {fd: this.fd}})
+      this.$router.push({ name: 'NewsfeedDetail', query: { id: this.fd.id, Category: this.Category }, params: {fd: this.fd}})
     }
   },
   mounted () {
@@ -89,36 +101,5 @@ export default {
 </script>
 
 <style>
-.feed-userprofile-box {
-  display: flex;
-}
-.feed-userprofile-img {
-  cursor: pointer;
-  width: 10%;
-  height: 10%;
-  text-align: left;
-}
-.feed-userprofile-content {
-  margin: 10px;
-  /* padding: 10px; */
-}
-.feed-userprofile-name {
-  cursor: pointer;
-}
-.feed-content-box {
-  cursor: pointer;
-  margin: 0 auto;
-  text-align: left;
-  padding: 10px;
-}
-/* .feed-content-box:hover {
-  box-shadow: 0px 5px 10px rgba(0,0,0,0.2);
-} */
-.feed-like-comment-box {
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  margin: 10px;
-  font-size: 20px;
-}
+
 </style>
